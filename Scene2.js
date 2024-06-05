@@ -45,7 +45,7 @@ class Scene2 extends Phaser.Scene {
       key: "attack_anim",
       frames: this.anims.generateFrameNumbers("attack"),
       frameRate: 20,
-      repeat: -1,
+      repeat: 0,
     });
 
     this.man.play("idle_anim");
@@ -106,12 +106,14 @@ class Scene2 extends Phaser.Scene {
 
     this.garbageScattered();
 
-    this.man.on("animationcomplete", this.animationCompleteHandler, this);
+    // this.man.on("animationcomplete", this.animationCompleteHandler, this);
 
     this.score = 0;
     this.scoreText = this.add.text(30, 30, `Score: ${this.score}`, {
       fontSize: "32px",
     });
+
+    let isAttackAnimationPlaying = false;
   }
 
   garbageScattered() {
@@ -123,6 +125,7 @@ class Scene2 extends Phaser.Scene {
     });
   }
   move() {
+    console.log(this.man.anims.currentAnim.key);
     let speedX = 0;
     let speedY = 0;
 
@@ -155,19 +158,25 @@ class Scene2 extends Phaser.Scene {
     if (speedX > 0) {
       this.man.flipX = false;
       if (this.man.anims.currentAnim.key !== "swim_anim") {
-        this.man.play("swim_anim");
+        this.playAnimation("swim_anim");
       }
     } else if (speedX < 0) {
       this.man.flipX = true;
       if (this.man.anims.currentAnim.key !== "swim_anim") {
-        this.man.play("swim_anim");
+        this.playAnimation("swim_anim");
       }
     }
 
     if (speedX == 0 && speedY == 0) {
       if (this.man.anims.currentAnim.key !== "idle_anim") {
-        this.man.play("idle_anim");
+        this.playAnimation("idle_anim");
       }
+    }
+  }
+
+  playAnimation(animationKey) {
+    if (this.man.anims.currentAnim.key !== "attack_anim") {
+      this.man.play(animationKey);
     }
   }
 
@@ -180,9 +189,16 @@ class Scene2 extends Phaser.Scene {
     // this.man.play("idle_anim");
   }
 
-  animationCompleteHandler(animation, frame) {
-    if (animation.key === "attack_anim") {
-      // this.man.play("idle_anim");
+  attackAnimation() {
+    if (this.enter.isDown && !this.isAttackAnimationPlaying) {
+      this.man.on("animationcomplete", (animation) => {
+        if (animation.key === "attack_anim") {
+          this.man.play("idle_anim");
+          this.isAttackAnimationPlaying = false;
+        }
+      });
+      this.man.play("attack_anim");
+      this.isAttackAnimationPlaying = true;
     }
   }
 
@@ -197,10 +213,24 @@ class Scene2 extends Phaser.Scene {
     this.garbage6.angle += 0.8;
     this.garbage7.angle += 0.6;
 
-    if (this.enter.isDown) {
-      if (this.man.anims.currentAnim.key !== "attack_anim") {
-        this.man.play("attack_anim");
-      }
+    // if (this.enter.isDown) {
+    //   if (this.man.anims.currentAnim.key !== "attack_anim") {
+    //     this.man.play("attack_anim");
+    //   }
+    // }
+
+    this.attackAnimation();
+
+    if (this.score >= 70) {
+      this.add.text(260, 200, "You win!", {
+        fontSize: "64px",
+        color: "#1fff22",
+      });
+      setTimeout(() => {
+        this.scene.pause();
+      }, 2000);
     }
+
+    // console.log(this.man.anims.currentAnim.key);
   }
 }
