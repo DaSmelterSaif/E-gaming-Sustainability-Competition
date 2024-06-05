@@ -107,6 +107,11 @@ class Scene2 extends Phaser.Scene {
     this.garbageScattered();
 
     this.man.on("animationcomplete", this.animationCompleteHandler, this);
+
+    this.score = 0;
+    this.scoreText = this.add.text(30, 30, `Score: ${this.score}`, {
+      fontSize: "32px",
+    });
   }
 
   garbageScattered() {
@@ -169,6 +174,8 @@ class Scene2 extends Phaser.Scene {
   destroyGarbage(man, garbage) {
     if (this.enter.isDown) {
       garbage.destroy();
+      this.score += 10;
+      this.scoreText.text = `Score: ${this.score}`;
     }
     // this.man.play("idle_anim");
   }
@@ -189,14 +196,6 @@ class Scene2 extends Phaser.Scene {
     this.garbage5.angle += 0.5;
     this.garbage6.angle += 0.8;
     this.garbage7.angle += 0.6;
-
-    this.physics.collide(this.man, this.garbageArray, (e) => {
-      console.log(e);
-      if (this.enter.isDown) {
-        console.log("Destroyed");
-        // Destroy collided garbage
-      }
-    });
 
     if (this.enter.isDown) {
       if (this.man.anims.currentAnim.key !== "attack_anim") {
