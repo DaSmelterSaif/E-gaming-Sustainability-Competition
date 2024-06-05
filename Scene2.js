@@ -20,6 +20,7 @@ class Scene2 extends Phaser.Scene {
     this.background.setScale(0.5);
 
     this.man = this.add.sprite(400, 250, "idle");
+    console.log(this.man.anims.currentAnim);
 
     // Add animations
     this.anims.create({
@@ -36,11 +37,64 @@ class Scene2 extends Phaser.Scene {
       repeat: -1,
     });
 
+    this.anims.create({
+      key: "attack_anim",
+      frames: this.anims.generateFrameNumbers("attack"),
+      frameRate: 20,
+      repeat: -1,
+    });
+
     this.man.play("idle_anim");
+    // console.log(this.man.anims.currentAnim.key);
 
     // this.input.keyboard.on("keydown", (event) => {
     //   console.log(event.key);
     // });
+
+    this.garbage = this.add.image(200, 200, "garbage");
+    this.garbage.setOrigin(0.5, 0.7);
+    this.garbage.setScale(0.5);
+
+    this.garbage2 = this.add.image(300, 200, "garbage2");
+    this.garbage2.setScale(0.7);
+
+    this.garbage3 = this.add.image(400, 200, "garbage3");
+    this.garbage3.setOrigin(0.5, 0.6);
+    this.garbage3.setScale(0.4);
+
+    this.garbage4 = this.add.image(500, 200, "garbage4");
+    this.garbage4.setScale(0.5);
+
+    this.garbage5 = this.add.image(600, 200, "garbage5");
+    this.garbage5.setScale(0.7);
+
+    this.garbage6 = this.add.image(700, 200, "garbage6");
+    this.garbage6.setScale(0.7);
+
+    this.garbage7 = this.add.image(400, 120, "garbage7");
+    this.garbage7.setScale(0.7);
+
+    // Array to hold the garbage
+    this.garbageArray = [
+      this.garbage,
+      this.garbage2,
+      this.garbage3,
+      this.garbage4,
+      this.garbage5,
+      this.garbage6,
+      this.garbage7,
+    ];
+
+    this.garbageScattered();
+  }
+
+  garbageScattered() {
+    this.garbageArray.forEach((garbageItem) => {
+      let randomX = Phaser.Math.Between(0, config.width);
+      let randomY = Phaser.Math.Between(0, config.height);
+      garbageItem.x = randomX;
+      garbageItem.y = randomY;
+    });
   }
 
   update() {
@@ -53,5 +107,13 @@ class Scene2 extends Phaser.Scene {
     } else if (this.left.isDown) {
       this.man.x -= this.speed;
     }
+
+    this.garbage.angle += 3;
+    this.garbage2.angle += 2;
+    this.garbage3.angle += 1;
+    this.garbage4.angle += 4;
+    this.garbage5.angle += 0.5;
+    this.garbage6.angle += 0.8;
+    this.garbage7.angle += 0.6;
   }
 }

@@ -13,6 +13,17 @@ class Scene1 extends Phaser.Scene {
       frameWidth: 48,
       frameHeight: 48,
     });
+    this.load.spritesheet("attack", "assets/images/Attack3.png", {
+      frameWidth: 48,
+      frameHeight: 48,
+    });
+    this.load.image("garbage", "assets/images/EmptyCan.png");
+    this.load.image("garbage2", "assets/images/EmptyBottle.png");
+    this.load.image("garbage3", "assets/images/EmptyGlass.png");
+    this.load.image("garbage4", "assets/images/EmptyJuiceCan.png");
+    this.load.image("garbage5", "assets/images/PlasticBag.png");
+    this.load.image("garbage6", "assets/images/PlasticBag2.png");
+    this.load.image("garbage7", "assets/images/PlasticBag3.png");
   }
 
   create() {
