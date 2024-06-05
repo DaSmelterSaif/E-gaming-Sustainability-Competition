@@ -9,7 +9,11 @@ class Scene1 extends Phaser.Scene {
       frameWidth: 48,
       frameHeight: 48,
     });
-    this.load.spritesheet("Swim", "assets/images/Swim.png", {
+    this.load.spritesheet("swim", "assets/images/Swim.png", {
+      frameWidth: 48,
+      frameHeight: 48,
+    });
+    this.load.spritesheet("swim2", "assets/images/Swim2.png", {
       frameWidth: 48,
       frameHeight: 48,
     });
