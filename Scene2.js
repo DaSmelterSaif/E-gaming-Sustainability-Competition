@@ -90,7 +90,23 @@ class Scene2 extends Phaser.Scene {
       this.garbage7,
     ];
 
+    this.garbageGroup = this.physics.add.group();
+    this.garbageArray.forEach((garbageItem) => {
+      this.garbageGroup.add(garbageItem);
+    });
+    // console.log(this.garbageGroup);
+
+    this.physics.add.collider(
+      this.man,
+      this.garbageGroup,
+      this.destroyGarbage,
+      null,
+      this
+    );
+
     this.garbageScattered();
+
+    this.man.on("animationcomplete", this.animationCompleteHandler, this);
   }
 
   garbageScattered() {
@@ -102,35 +118,66 @@ class Scene2 extends Phaser.Scene {
     });
   }
   move() {
+    let speedX = 0;
+    let speedY = 0;
+
     // Move up
     if (this.up.isDown) {
-      this.man.y -= this.speed;
+      speedY = -this.speed;
     }
     // Move down
     if (this.down.isDown) {
-      this.man.y += this.speed;
+      speedY = this.speed;
     }
     // Move right
     if (this.right.isDown) {
-      this.man.x += this.speed;
-      this.man.flipX = false;
-      if (this.man.anims.currentAnim.key !== "swim_anim") {
-        this.man.anims.play("swim_anim");
-      }
+      speedX = this.speed;
     }
+
     // Move left
     if (this.left.isDown) {
-      this.man.x -= this.speed;
+      speedX = -this.speed;
+    }
+
+    if (speedX !== 0 && speedY !== 0) {
+      speedX /= Math.SQRT2;
+      speedY /= Math.SQRT2;
+    }
+
+    this.man.x += speedX;
+    this.man.y += speedY;
+
+    if (speedX > 0) {
+      this.man.flipX = false;
+      if (this.man.anims.currentAnim.key !== "swim_anim") {
+        this.man.play("swim_anim");
+      }
+    } else if (speedX < 0) {
       this.man.flipX = true;
       if (this.man.anims.currentAnim.key !== "swim_anim") {
-        this.man.anims.play("swim_anim");
+        this.man.play("swim_anim");
       }
-    } // else {
-    // this.man.anims.play("idle_anim");
-    // }
+    }
+
+    if (speedX == 0 && speedY == 0) {
+      if (this.man.anims.currentAnim.key !== "idle_anim") {
+        this.man.play("idle_anim");
+      }
+    }
   }
 
-  destroyGarbage() {}
+  destroyGarbage(man, garbage) {
+    if (this.enter.isDown) {
+      garbage.destroy();
+    }
+    // this.man.play("idle_anim");
+  }
+
+  animationCompleteHandler(animation, frame) {
+    if (animation.key === "attack_anim") {
+      // this.man.play("idle_anim");
+    }
+  }
 
   update() {
     this.move();
@@ -147,7 +194,14 @@ class Scene2 extends Phaser.Scene {
       console.log(e);
       if (this.enter.isDown) {
         console.log("Destroyed");
+        // Destroy collided garbage
       }
     });
+
+    if (this.enter.isDown) {
+      if (this.man.anims.currentAnim.key !== "attack_anim") {
+        this.man.play("attack_anim");
+      }
+    }
   }
 }
